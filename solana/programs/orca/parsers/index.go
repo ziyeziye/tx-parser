@@ -1,8 +1,9 @@
 package parsers
 
 import (
-	"github.com/0xjeffro/tx-parser/solana/programs/U6m2CDdhRg"
-	"github.com/0xjeffro/tx-parser/solana/programs/pumpfun"
+	"fmt"
+
+	"github.com/0xjeffro/tx-parser/solana/programs/orca"
 	"github.com/0xjeffro/tx-parser/solana/types"
 	"github.com/mr-tron/base58"
 )
@@ -16,13 +17,14 @@ func InstructionRouter(result *types.ParsedResult, instruction types.Instruction
 	discriminator := *(*[8]byte)(decode[:8])
 
 	switch discriminator {
-	case U6m2CDdhRg.SwapDiscriminator:
+	case orca.SwapDiscriminator:
 		return SwapParser(result, instruction, decode)
 	default:
+		fmt.Println("Unknown discriminator", discriminator)
 		return types.UnknownAction{
 			BaseAction: types.BaseAction{
 				ProgramID:       result.AccountList[instruction.ProgramIDIndex],
-				ProgramName:     pumpfun.ProgramName,
+				ProgramName:     orca.ProgramName,
 				InstructionName: "Unknown",
 			},
 		}, nil

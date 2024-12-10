@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/gagliardetto/solana-go"
+)
+
 type RPCResponse struct {
 	JsonRPC string `json:"jsonrpc"`
 	Result  RawTx  `json:"result"`
@@ -16,11 +20,13 @@ type RawTx struct {
 	Transaction      Transaction `json:"transaction"`
 }
 
-type Instruction struct {
-	Accounts       []int  `json:"accounts"`
-	Data           string `json:"data"`
-	ProgramIDIndex int    `json:"programIdIndex"`
-}
+// type Instruction struct {
+// 	Accounts       []int  `json:"accounts"`
+// 	Data           string `json:"data"`
+// 	ProgramIDIndex int    `json:"programIdIndex"`
+// }
+
+type Instruction = solana.CompiledInstruction
 type InnerInstructions struct {
 	Index        int           `json:"index"`
 	Instructions []Instruction `json:"instructions"`
@@ -31,7 +37,7 @@ type LoadedAddresses struct {
 }
 type UITokenAmount struct {
 	Amount         string  `json:"amount"`
-	Decimals       uint64  `json:"decimals"`
+	Decimals       uint8   `json:"decimals"`
 	UIAmount       float64 `json:"uiAmount"`
 	UIAmountString string  `json:"uiAmountString"`
 }
@@ -112,4 +118,8 @@ type ParsedTx struct {
 	} `json:"tokenTransfers"`
 	TransactionError interface{} `json:"transactionError"`
 	Type             string      `json:"type"`
+}
+
+func GetPublicKey(v string) solana.PublicKey {
+	return solana.MustPublicKeyFromBase58(v)
 }

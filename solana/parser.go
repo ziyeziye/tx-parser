@@ -2,6 +2,8 @@ package solana
 
 import (
 	"encoding/json"
+	"fmt"
+
 	"github.com/0xjeffro/tx-parser/solana/types"
 )
 
@@ -24,6 +26,14 @@ func TxParser(tx types.RawTx) *types.ParsedResult {
 	result.RawTx = tx                                                               // set raw tx
 	result = *getAccountList(&result)                                               // get account list
 	result.Actions = make([]types.Action, len(tx.Transaction.Message.Instructions)) // init actions
+
+	if err := result.ExtractSPLTokenInfo(); err != nil {
+		fmt.Printf("failed to extract SPL Token Addresses: %s", err)
+	}
+
+	if err := result.ExtractSPLDecimals(); err != nil {
+		fmt.Printf("failed to extract SPL decimals: %s", err)
+	}
 
 	for i := range tx.Transaction.Message.Instructions {
 		action, err := router(&result, i)

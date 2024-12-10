@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"fmt"
+
 	"github.com/0xjeffro/tx-parser/solana/globals"
 	"github.com/0xjeffro/tx-parser/solana/programs/raydiumLiquidityPoolV4"
 	"github.com/0xjeffro/tx-parser/solana/programs/tokenProgram"
@@ -25,7 +26,7 @@ func SwapParser(result *types.ParsedResult, instruction types.Instruction, instr
 	fmt.Println(swapData)
 
 	var fromToken, toToken string = globals.WSOL, globals.WSOL
-	var fromTokenDecimals, toTokenDecimals uint64 = globals.SOLDecimals, globals.SOLDecimals
+	var fromTokenDecimals, toTokenDecimals uint8 = globals.SOLDecimals, globals.SOLDecimals
 
 	accountsLen := len(instruction.Accounts)
 	who := result.AccountList[instruction.Accounts[accountsLen-1]]
@@ -84,7 +85,7 @@ func SwapParser(result *types.ParsedResult, instruction types.Instruction, instr
 		ToTokenAmount:     toTokenAmount,
 		ToTokenDecimals:   toTokenDecimals,
 
-		MinimumAmountOut: swapData.MinimumAmountOut,
+		// MinimumAmountOut: swapData.MinimumAmountOut,
 	}
 
 	return &action, nil

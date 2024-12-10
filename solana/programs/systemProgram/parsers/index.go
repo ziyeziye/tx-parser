@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"encoding/binary"
+
 	"github.com/0xjeffro/tx-parser/solana/programs/systemProgram"
 	"github.com/0xjeffro/tx-parser/solana/types"
 	"github.com/mr-tron/base58"
@@ -9,7 +10,7 @@ import (
 
 func InstructionRouter(result *types.ParsedResult, instruction types.Instruction) (types.Action, error) {
 	data := instruction.Data
-	decode, err := base58.Decode(data)
+	decode, err := base58.Decode(data.String())
 	if err != nil {
 		return nil, err
 	}

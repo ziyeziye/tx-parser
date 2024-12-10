@@ -4,33 +4,52 @@ import (
 	"github.com/0xjeffro/tx-parser/solana/globals"
 	"github.com/0xjeffro/tx-parser/solana/programs/pumpfun"
 	"github.com/0xjeffro/tx-parser/solana/types"
-	"github.com/near/borsh-go"
+	"github.com/0xjeffro/tx-parser/utils"
+	"github.com/gagliardetto/solana-go"
 )
 
-type SellData struct {
-	Discriminator uint64
-	Amount        uint64
-	MinSolOutput  uint64
+type SwapData struct {
+	Mint                 solana.PublicKey
+	SolAmount            uint64
+	TokenAmount          uint64
+	IsBuy                bool
+	User                 solana.PublicKey
+	Timestamp            int64
+	VirtualSolReserves   uint64
+	VirtualTokenReserves uint64
 }
 
-func SellParser(result *types.ParsedResult, instruction types.Instruction, decodedData []byte) (*types.PumpFunSellAction, error) {
-	var sellData SellData
-	err := borsh.Deserialize(&sellData, decodedData)
+func SellParser(result *types.ParsedResult, instruction types.Instruction, decodedData []byte) (action *types.PumpFunSellAction, err error) {
+	datas, err := utils.CommonParseSwap[SwapData](result, instruction, pumpfun.Program)
 	if err != nil {
 		return nil, err
 	}
 
-	action := types.PumpFunSellAction{
+	data := datas[0]
+	action = &types.PumpFunSellAction{
 		BaseAction: types.BaseAction{
 			ProgramID:       pumpfun.Program,
 			ProgramName:     pumpfun.ProgramName,
 			InstructionName: "Sell",
 		},
-		Who:             result.AccountList[instruction.Accounts[6]],
-		FromToken:       result.AccountList[instruction.Accounts[2]],
+		Who:             data.User.String(),
+		FromToken:       data.Mint.String(),
 		ToToken:         globals.WSOL,
-		FromTokenAmount: sellData.Amount,
-		ToTokenAmount:   sellData.MinSolOutput,
+		FromTokenAmount: data.TokenAmount,
+		ToTokenAmount:   data.SolAmount,
 	}
-	return &action, nil
+
+	fromTokenDecimals, err := utils.CommonParseDecimals(result, action.FromToken)
+	if err != nil {
+		return nil, err
+	}
+	action.FromTokenDecimals = fromTokenDecimals
+
+	toTokenDecimals, err := utils.CommonParseDecimals(result, action.ToToken)
+	if err != nil {
+		return nil, err
+	}
+	action.ToTokenDecimals = toTokenDecimals
+
+	return action, err
 }

@@ -10,6 +10,8 @@ import (
 	ComputeBudgetParsers "github.com/0xjeffro/tx-parser/solana/programs/computeBudget/parsers"
 	"github.com/0xjeffro/tx-parser/solana/programs/jupiterDCA"
 	JupiterDCA "github.com/0xjeffro/tx-parser/solana/programs/jupiterDCA/parsers"
+	"github.com/0xjeffro/tx-parser/solana/programs/orca"
+	OrcaParsers "github.com/0xjeffro/tx-parser/solana/programs/orca/parsers"
 	"github.com/0xjeffro/tx-parser/solana/programs/pumpfun"
 	PumpfunParsers "github.com/0xjeffro/tx-parser/solana/programs/pumpfun/parsers"
 	"github.com/0xjeffro/tx-parser/solana/programs/raydiumLiquidityPoolV4"
@@ -47,6 +49,8 @@ func router(result *types.ParsedResult, instructionIdx int) (action types.Action
 		return RaydiumLiquidityPoolV4.InstructionRouter(result, instruction, instructionIdx)
 	case jupiterAggregatorV6.Program:
 		return JupiterAggregatorV6.InstructionRouter(result, instruction)
+	case orca.Program:
+		return OrcaParsers.InstructionRouter(result, instruction)
 	default:
 		return types.UnknownAction{
 			BaseAction: types.BaseAction{

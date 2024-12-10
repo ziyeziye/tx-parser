@@ -2,9 +2,10 @@ package parsers
 
 import (
 	"encoding/binary"
+	"strconv"
+
 	"github.com/0xjeffro/tx-parser/solana/programs/U6m2CDdhRg"
 	"github.com/0xjeffro/tx-parser/solana/types"
-	"strconv"
 )
 
 func SwapParser(result *types.ParsedResult, instruction types.Instruction, decodedData []byte) (*types.U6m2CDdhRgSwapAction, error) {
@@ -18,7 +19,7 @@ func SwapParser(result *types.ParsedResult, instruction types.Instruction, decod
 	postTokenBalances := result.RawTx.Meta.PostTokenBalances
 
 	var preToTokenAmount, postToTokenAmount uint64
-	var fromTokenDecimals, toTokenDecimals uint64
+	var fromTokenDecimals, toTokenDecimals uint8
 	for _, b := range preTokenBalances {
 		if b.Mint == toToken && b.Owner == who {
 			var err error

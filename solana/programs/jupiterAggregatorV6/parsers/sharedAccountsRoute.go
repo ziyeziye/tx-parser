@@ -21,7 +21,7 @@ func SharedAccountsRouteParser(result *types.ParsedResult, instruction types.Ins
 
 	var instructionIndex int
 	for idx, instr := range result.RawTx.Transaction.Message.Instructions {
-		if result.AccountList[instr.ProgramIDIndex] == jupiterAggregatorV6.Program && instr.Data == instruction.Data {
+		if result.AccountList[instr.ProgramIDIndex] == jupiterAggregatorV6.Program && instr.Data.String() == instruction.Data.String() {
 			instructionIndex = idx
 			break
 		}
@@ -78,7 +78,7 @@ func SharedAccountsRouteParser(result *types.ParsedResult, instruction types.Ins
 		}
 	}
 
-	var fromTokenDecimals, toTokenDecimals uint64
+	var fromTokenDecimals, toTokenDecimals uint8
 	if fromToken == globals.WSOL {
 		fromTokenDecimals = globals.SOLDecimals
 	}

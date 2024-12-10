@@ -18,7 +18,7 @@ func RouteParser(result *types.ParsedResult, instruction types.Instruction) (*ty
 
 	var fromToken string
 	var fromTokenAmount, toTokenAmount uint64
-	var fromTokenDecimals, toTokenDecimals uint64
+	var fromTokenDecimals, toTokenDecimals uint8
 
 	if toToken == globals.WSOL {
 		toTokenDecimals = globals.SOLDecimals
@@ -27,7 +27,7 @@ func RouteParser(result *types.ParsedResult, instruction types.Instruction) (*ty
 	// get index of this instruction
 	var instructionIndex int
 	for idx, instr := range result.RawTx.Transaction.Message.Instructions {
-		if result.AccountList[instr.ProgramIDIndex] == jupiterAggregatorV6.Program && instr.Data == instruction.Data {
+		if result.AccountList[instr.ProgramIDIndex] == jupiterAggregatorV6.Program && instr.Data.String() == instruction.Data.String() {
 			instructionIndex = idx
 			break
 		}

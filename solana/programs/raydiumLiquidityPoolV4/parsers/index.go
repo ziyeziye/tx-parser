@@ -8,7 +8,7 @@ import (
 
 func InstructionRouter(result *types.ParsedResult, instruction types.Instruction, instructionIdx int) (types.Action, error) {
 	data := instruction.Data
-	decode, err := base58.Decode(data)
+	decode, err := base58.Decode(data.String())
 	if err != nil {
 		return nil, err
 	}
